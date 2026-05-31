@@ -20,6 +20,7 @@ COGS = [
     "cogs.events",
     "cogs.emojis",
     "cogs.info",
+    "cogs.rolescard",
 ]
 
 
