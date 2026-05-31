@@ -156,7 +156,8 @@ class RolesCard(commands.Cog):
                 inline=False
             )
         await interaction.followup.send(embed=embed, ephemeral=True)
-@app_commands.command(name="notifyschedule", description="Agenda notificação")
+
+    @app_commands.command(name="notifyschedule", description="Agenda notificação")
     @app_commands.describe(tipo="Tipo de notificação", mensagem="Mensagem", tempo="Minutos para enviar")
     @app_commands.checks.has_permissions(manage_guild=True)
     async def notifyschedule(self, interaction: discord.Interaction, tipo: str, mensagem: str, tempo: int):
@@ -199,5 +200,7 @@ class RolesCard(commands.Cog):
         self.scheduled_notify.cancel()
         self.scheduled_notify = None
         await interaction.followup.send("✅ Notificação cancelada!", ephemeral=True)
+
+
 async def setup(bot):
     await bot.add_cog(RolesCard(bot))
