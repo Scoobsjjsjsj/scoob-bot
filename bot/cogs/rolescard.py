@@ -156,6 +156,48 @@ class RolesCard(commands.Cog):
                 inline=False
             )
         await interaction.followup.send(embed=embed, ephemeral=True)
+@app_commands.command(name="notifyschedule", description="Agenda notificação")
+    @app_commands.describe(tipo="Tipo de notificação", mensagem="Mensagem", tempo="Minutos para enviar")
+    @app_commands.checks.has_permissions(manage_guild=True)
+    async def notifyschedule(self, interaction: discord.Interaction, tipo: str, mensagem: str, tempo: int):
+        await interaction.response.defer(ephemeral=True)
+        if tipo not in NOTIFY_TYPES:
+            await interaction.followup.send("❌ Tipo inválido!", ephemeral=True)
+            return
+        if self.scheduled_notify:
+            await interaction.followup.send("❌ Já existe uma agendada! Use /notifycancel primeiro.", ephemeral=True)
+            return
+        await interaction.followup.send(f"✅ Notificação agendada para {tempo} minutos!", ephemeral=True)
+        async def send_later():
+            await asyncio.sleep(tempo * 60)
+            config = NOTIFY_TYPES[tipo]
+            embed = discord.Embed(title=config["title"], description=f"**{mensagem}**", color=config["color"])
+            embed.add_field(name="📢 Agendado por", value=interaction.user.mention)
+            embed.add_field(name="🕐 Horário", value=datetime.now().strftime("%d/%m/%Y %H:%M"))
+            for member in interaction.guild.members:
+                if not member.bot:
+                    try:
+                        await member.send(embed=embed)
+                    except:
+                        pass
+            role_pings = ""
+            for role_name in config["roles"]:
+                role = discord.utils.get(interaction.guild.roles, name=role_name)
+                if role:
+                    role_pings += f"{role.mention} "
+            await interaction.channel.send(f"@everyone {role_pings}", embed=embed)
+            self.scheduled_notify = None
+        self.scheduled_notify = asyncio.create_task(send_later())
 
+    @app_commands.command(name="notifycancel", description="Cancela notificação agendada")
+    @app_commands.checks.has_permissions(manage_guild=True)
+    async def notifycancel(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        if not self.scheduled_notify:
+            await interaction.followup.send("❌ Nenhuma notificação agendada!", ephemeral=True)
+            return
+        self.scheduled_notify.cancel()
+        self.scheduled_notify = None
+        await interaction.followup.send("✅ Notificação cancelada!", ephemeral=True)
 async def setup(bot):
     await bot.add_cog(RolesCard(bot))
