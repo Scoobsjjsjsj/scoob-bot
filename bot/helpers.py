@@ -9,32 +9,31 @@ RUST_ORANGE = discord.Color.from_rgb(220, 100, 10)
 RUST_GOLD   = discord.Color.from_rgb(220, 160, 10)
 
 AUTONAME_PREFIX = "𝗦𝗰𝗼𝗼𝗯 | "
+AUTONAME_EMOJI  = "🐕"  # Emoji fixo para todos
 
 # ── Clan role definitions (ordered highest → lowest) ─────────────────────────
-# (display_name, color, permissions_kwargs, hoist, nick_emoji)
 CLAN_ROLE_DEFS: list[tuple] = [
-    # (display_name, discord.Color, permissions_kwargs, hoist, nick_emoji)
-    ("👑 Lider",      discord.Color.from_rgb(255,   0,   0),   # #FF0000
+    ("👑 Lider",      discord.Color.from_rgb(255,   0,   0),
      {"administrator": True}, True, "👑"),
-    ("⚔️ Co-Lider",   discord.Color.from_rgb(139,   0,   0),   # #8B0000
+    ("⚔️ Co-Lider",   discord.Color.from_rgb(139,   0,   0),
      {"kick_members": True, "ban_members": True, "manage_channels": True,
       "manage_messages": True, "manage_roles": True, "mention_everyone": True,
       "mute_members": True, "deafen_members": True, "move_members": True,
       "manage_nicknames": True, "manage_guild": True}, True, "⚔️"),
-    ("🛡️ Oficial",    discord.Color.from_rgb(255, 107,   0),   # #FF6B00
+    ("🛡️ Oficial",    discord.Color.from_rgb(255, 107,   0),
      {"kick_members": True, "ban_members": True, "manage_messages": True,
       "manage_roles": True, "mute_members": True, "move_members": True,
       "manage_nicknames": True}, True, "🛡️"),
-    ("💣 Raider",     discord.Color.from_rgb(255,  69,   0), {}, True,  "💣"),  # #FF4500
-    ("🎯 PVP",        discord.Color.from_rgb(255, 215,   0), {}, True,  "🎯"),  # #FFD700
-    ("🌿 Roamer",     discord.Color.from_rgb(  0, 170,   0), {}, True,  "🌿"),  # #00AA00
-    ("🏗️ Builder",    discord.Color.from_rgb(  0, 102, 255), {}, True,  "🏗️"),  # #0066FF
-    ("⚡ Eletricista", discord.Color.from_rgb(  0, 191, 255), {}, True,  "⚡"),  # #00BFFF
-    ("🌾 Farmer",     discord.Color.from_rgb(  0, 100,   0), {}, True,  "🌾"),  # #006400
-    ("🤖 BotFarmer",  discord.Color.from_rgb(128, 128, 128), {}, True,  "🤖"),  # #808080
-    ("🔍 Scout",      discord.Color.from_rgb(139,   0, 255), {}, True,  "🔍"),  # #8B00FF
-    ("🎮 Membro",     discord.Color.from_rgb(  0,   0, 139), {}, False, "🎮"),  # #00008B
-    ("🆕 Recruta",    discord.Color.from_rgb( 64,  64,  64), {}, False, "🆕"),  # #404040
+    ("💣 Raider",     discord.Color.from_rgb(255,  69,   0), {}, True,  "💣"),
+    ("🎯 PVP",        discord.Color.from_rgb(255, 215,   0), {}, True,  "🎯"),
+    ("🌿 Roamer",     discord.Color.from_rgb(  0, 170,   0), {}, True,  "🌿"),
+    ("🏗️ Builder",    discord.Color.from_rgb(  0, 102, 255), {}, True,  "🏗️"),
+    ("⚡ Eletricista", discord.Color.from_rgb(  0, 191, 255), {}, True,  "⚡"),
+    ("🌾 Farmer",     discord.Color.from_rgb(  0, 100,   0), {}, True,  "🌾"),
+    ("🤖 BotFarmer",  discord.Color.from_rgb(128, 128, 128), {}, True,  "🤖"),
+    ("🔍 Scout",      discord.Color.from_rgb(139,   0, 255), {}, True,  "🔍"),
+    ("🎮 Membro",     discord.Color.from_rgb(  0,   0, 139), {}, False, "🎮"),
+    ("🆕 Recruta",    discord.Color.from_rgb( 64,  64,  64), {}, False, "🆕"),
 ]
 
 CLAN_ROLE_NAMES  = [r[0] for r in CLAN_ROLE_DEFS]
@@ -60,9 +59,9 @@ def get_clan_role_emoji(member: discord.Member) -> str:
 
 
 def build_nick(member: discord.Member) -> str:
-    emoji = get_clan_role_emoji(member)
-    base  = member.name[:18]
-    return f"{AUTONAME_PREFIX}{emoji} {base}"[:32]
+    """Builds nickname with fixed 🐕 emoji — no role emoji."""
+    base = member.name[:18]
+    return f"{AUTONAME_PREFIX}{AUTONAME_EMOJI} {base}"[:32]
 
 # ── Permission helpers ────────────────────────────────────────────────────────
 
@@ -152,10 +151,8 @@ THEME_MAP: dict[str, tuple[str, discord.Color]] = {
     "mystery":     ("🔍", discord.Color.from_rgb(75,  0,   130)),
     "flower":      ("🌸", discord.Color.from_rgb(255, 182, 193)),
     "sport":       ("🏆", discord.Color.from_rgb(255, 165, 0)),
-    "skull":       ("💀", discord.Color.from_rgb(100, 100, 100)),
     "military":    ("🎖️", discord.Color.from_rgb(80,  100, 60)),
 }
-
 
 # ── Server emoji helpers ──────────────────────────────────────────────────────
 
@@ -177,7 +174,6 @@ ROLE_TO_EMOJI_NAME: dict[str, str] = {
 
 
 def get_server_emoji(guild: discord.Guild, role_name: str, fallback: str) -> str:
-    """Return the server's custom emoji string for a clan role, or fallback unicode."""
     emoji_name = ROLE_TO_EMOJI_NAME.get(role_name)
     if emoji_name:
         server_emoji = discord.utils.get(guild.emojis, name=emoji_name)
