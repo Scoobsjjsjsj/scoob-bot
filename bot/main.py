@@ -21,6 +21,7 @@ COGS = [
     "cogs.emojis",
     "cogs.info",
     "cogs.rolescard",
+    "cogs.divulgar",
 ]
 
 
