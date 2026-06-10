@@ -3,3 +3,5 @@ Pillow
 aiohttp
 PyNaCl
 audioop-lts
+yt-dlp
+PyNaCl
