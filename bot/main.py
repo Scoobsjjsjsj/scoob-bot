@@ -22,6 +22,8 @@ COGS = [
     "cogs.info",
     "cogs.rolescard",
     "cogs.divulgar",
+    "cogs.music",
+
 ]
 
 
